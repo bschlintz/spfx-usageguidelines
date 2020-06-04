@@ -4,6 +4,6 @@
         Title="UsageGuidelines"
         Location="ClientSideExtension.ApplicationCustomizer"
         ComponentId="021a3acb-1303-40e0-b8cd-a14a45d77385"
-        Properties="{&quot;testMessage&quot;:&quot;Test message&quot;}">
+        Properties="{&quot;declineRedirectUrl&quot;:&quot;&quot;}">
     </ClientSideComponentInstance>
 </Elements>
