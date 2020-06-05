@@ -16,6 +16,10 @@
           "elementManifests": [
             "elements.xml",
             "ClientSideInstance.xml"
+          ],
+          "elementFiles": [
+            "list-config.xml",
+            "list-tracking.xml"
           ]
         }
       }

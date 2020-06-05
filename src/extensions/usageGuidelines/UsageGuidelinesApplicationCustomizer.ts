@@ -6,15 +6,12 @@ import {
   BaseApplicationCustomizer, PlaceholderContent, PlaceholderName
 } from '@microsoft/sp-application-base';
 
-import * as strings from 'UsageGuidelinesApplicationCustomizerStrings';
-import { UsageGuidelinesService } from '../../services/UsageGuidelinesService';
-import { UsageGuidelinesComponent } from './components/UsageGuidelines';
+import { UsageGuidelinesService, UsageGuidelinesConfig } from '../../services/UsageGuidelinesService';
+import { UsageGuidelinesComponent } from './components/UsageGuidelinesComponent';
 
-const LOG_SOURCE: string = 'UsageGuidelinesApplicationCustomizer';
+export const LOG_SOURCE: string = 'UsageGuidelines';
 
-export interface IUsageGuidelinesApplicationCustomizerProperties {
-  declineRedirectUrl: string;
-}
+export interface IUsageGuidelinesApplicationCustomizerProperties {}
 
 /** A Custom Action which can be run during execution of a Client Side Application */
 export default class UsageGuidelinesApplicationCustomizer
@@ -25,7 +22,7 @@ export default class UsageGuidelinesApplicationCustomizer
 
   @override
   public async onInit(): Promise<void> {
-    Log.info(LOG_SOURCE, `Initialized ${strings.Title}`);
+    Log.info(LOG_SOURCE, `Initialized Usage Guidelines Extension`);
 
     if (!this._service) {
       this._service = new UsageGuidelinesService(this.context);
@@ -36,14 +33,16 @@ export default class UsageGuidelinesApplicationCustomizer
   }
 
   private async onNavigated(): Promise<void> {
-    const hasUserAccepted = await this._service.getUserAcceptance();
+    const config = await this._service.getUserAcceptance();
+    Log.verbose(LOG_SOURCE, JSON.stringify(config));
 
-    if (!hasUserAccepted) {
-      this.renderUsageGuidelines();
+    if (config && !config.userHasAcceptedCurrentVersion) {
+      Log.info(LOG_SOURCE, `Displaying Usage Guidelines`);
+      this.renderUsageGuidelines(config);
     }
   }
 
-  private renderUsageGuidelines(): void {
+  private renderUsageGuidelines(config: UsageGuidelinesConfig): void {
     if (!this._topPlaceholder) {
       this._topPlaceholder = this.context.placeholderProvider.tryCreateContent(PlaceholderName.Top);
 
@@ -56,7 +55,7 @@ export default class UsageGuidelinesApplicationCustomizer
     //Render React Usage Guidelines Component
     const bannerComponent = React.createElement(UsageGuidelinesComponent, {
       service: this._service,
-      declineRedirectUrl: this.properties.declineRedirectUrl || `https://${window.location.host}`
+      config
     });
     ReactDom.render(bannerComponent, this._topPlaceholder.domElement);
   }

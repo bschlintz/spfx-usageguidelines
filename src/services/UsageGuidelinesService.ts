@@ -1,64 +1,118 @@
 import { BaseComponentContext } from '@microsoft/sp-component-base';
-import { SPHttpClient } from '@microsoft/sp-http';
-
-export type UsageGuidelinesMessage = {
-  message: string;
-  version: string;
-}
+import { Log } from '@microsoft/sp-core-library';
+import { sp } from "@pnp/sp";
+import { PnPClientStorage } from "@pnp/common";
+import "@pnp/sp/webs";
+import "@pnp/sp/lists";
+import "@pnp/sp/items";
+import "@pnp/common";
+import { LOG_SOURCE } from '../extensions/usageGuidelines/UsageGuidelinesApplicationCustomizer';
 
 export type UsageGuidelinesConfig = {
   header: string;
   message: string;
   version: string;
   declineRedirectUrl: string;
-}
+  userHasAcceptedCurrentVersion?: boolean;
+};
 
-export type UsageGuidelinesResponse = {
-
-}
+const LIST_TRACKING = "UsageGuidelinesTracking";
+const LIST_CONFIG = "UsageGuidelinesConfig";
 
 export class UsageGuidelinesService {
   private _context: BaseComponentContext;
+  private _storage: PnPClientStorage;
+  private _cacheExpiration: Date;
 
   constructor(context: BaseComponentContext) {
     this._context = context;
+    this._storage = new PnPClientStorage();
+    this._cacheExpiration = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30); // Now + 30 Days
+
+    sp.setup(context);
   }
 
-  public getConfiguration = async (): Promise<UsageGuidelinesConfig> => {
-    let apiUrl = `/_api/lists/getbytitle('UsageGuidelinesConfig')/items?$top=1`;
-    const result = await this._context.spHttpClient.get(`${this._context.pageContext.site.serverRelativeUrl}${apiUrl}`, SPHttpClient.configurations.v1);
+  private _makeCacheKey = (listName: string) => `${listName}_${this._context.pageContext.site.id.toString()}`;
 
-    if (result.ok) {
-      const data = await result.json();
-      const item = data && data.value && data.value.length > 0 ? data.value[0] : null;
-      if (item) {
-        return {
-          header: item['Header'],
-          message: item['Message'],
-          version: item['MessageVersion'],
-          declineRedirectUrl: item['DeclineRedirectUrl'],
-        } as UsageGuidelinesConfig;
+  private _clearCache = (): void => {
+    this._storage.local.delete(this._makeCacheKey(LIST_CONFIG));
+    this._storage.local.delete(this._makeCacheKey(LIST_TRACKING));
+  }
+
+  private _getConfig = async (): Promise<UsageGuidelinesConfig> => {
+    const cacheKey = this._makeCacheKey(LIST_CONFIG);
+    const fromCache = this._storage.local.get(cacheKey);
+
+    if (!fromCache) {
+      // Query for Acceptance Guidelines configuration
+      const configResult = await sp.web.lists.getByTitle(LIST_CONFIG).items.top(1)
+                                      .filter(`Enabled eq 1`).orderBy('MessageVersion', false).get();
+
+      if (!configResult || configResult.length === 0) {
+        Log.warn(LOG_SOURCE, `No enabled usage guidelines configuration items found.`);
+        return null;
       }
+      const configItem = configResult[0];
+
+      const config: UsageGuidelinesConfig = {
+        header: configItem['Header'],
+        message: configItem['Message'],
+        version: configItem['MessageVersion'],
+        declineRedirectUrl: configItem['DeclineRedirectUrl'],
+      };
+      this._storage.local.put(cacheKey, config, this._cacheExpiration);
+      return config;
     }
-    throw new Error(`Failed to fetch Usage Guidelines Config. [${result.status}] ${result.statusText}`);
+    else return fromCache;
   }
 
-  public getUserAcceptance = async (): Promise<boolean> => {
-    const result = await this._context.spHttpClient.get(`${this._context.pageContext.site.serverRelativeUrl}/_api/web`, SPHttpClient.configurations.v1);
-    return false;
+  private _getUserAcceptanceForVersion = async (version: string): Promise<boolean> => {
+    const cacheKey = this._makeCacheKey(LIST_TRACKING);
+    const fromCache = this._storage.local.get(cacheKey);
+
+    if (!fromCache || false === fromCache.accepted || fromCache.version !== version) {
+
+      // Query for User Acceptance of current version
+      const userAcceptanceResult = await sp.web.lists.getByTitle(LIST_TRACKING).items.filter([
+        `AcceptedBy/Id eq ${this._context.pageContext.legacyPageContext.userId}`,
+        `AcceptedMessageVersion eq '${version}'`
+      ].join(' and ')).expand('AcceptedBy').select('AcceptedBy/Id', 'AcceptedMessageVersion')
+      .orderBy('AcceptedMessageVersion', false).top(1).get();
+
+      const userHasAcceptedCurrentVersion = userAcceptanceResult && userAcceptanceResult.length > 0;
+      this._storage.local.put(cacheKey, { accepted: userHasAcceptedCurrentVersion, version }, this._cacheExpiration);
+
+      return userHasAcceptedCurrentVersion;
+    }
+    else return fromCache.accepted;
+  }
+
+  public getUserAcceptance = async (): Promise<UsageGuidelinesConfig> => {
+    try {
+      let config = await this._getConfig();
+      if (config) {
+        config.userHasAcceptedCurrentVersion = await this._getUserAcceptanceForVersion(config.version);
+      }
+      return config;
+    }
+    catch(error) {
+      Log.error(LOG_SOURCE, error);
+    }
   }
 
   public setUserAccepted = async (version: string): Promise<void> => {
-    console.log(`[UsageGuidelinesService] User accepted version ${version}`);
-  }
-
-  public getUsageMessage = async (): Promise<UsageGuidelinesMessage> => {
-    const result = await this._context.spHttpClient.get(`${this._context.pageContext.site.serverRelativeUrl}/_api/web`, SPHttpClient.configurations.v1);
-
-    return {
-      message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      version: "v0.1"
-    };
+    try {
+      await sp.web.lists.getByTitle(LIST_TRACKING).items.add({
+        Title: `Accepted by ${this._context.pageContext.user.displayName}`,
+        AcceptedMessageVersion: version,
+        AcceptedById: this._context.pageContext.legacyPageContext.userId,
+      });
+      this._clearCache(); // clear cache after saving acceptance
+      await this.getUserAcceptance(); // re-fetch to establish cache
+    }
+    catch (error) {
+      Log.error(LOG_SOURCE, error);
+    }
   }
 
 }

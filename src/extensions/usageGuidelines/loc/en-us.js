@@ -1,5 +1,6 @@
 define([], function() {
   return {
-    "Title": "UsageGuidelinesApplicationCustomizer"
+    "AcceptLabel": "Accept",
+    "DeclineLabel": "Decline",
   }
 });

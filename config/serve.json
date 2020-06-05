@@ -8,9 +8,7 @@
       "customActions": {
         "021a3acb-1303-40e0-b8cd-a14a45d77385": {
           "location": "ClientSideExtension.ApplicationCustomizer",
-          "properties": {
-            "declineRedirectUrl": "https://bing.com"
-          }
+          "properties": {}
         }
       }
     }

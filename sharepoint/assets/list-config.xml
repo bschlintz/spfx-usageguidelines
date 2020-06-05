@@ -1,0 +1,38 @@
+<List xmlns:ows="Microsoft SharePoint" Title="UsageGuidelinesConfig" NoCrawl="TRUE" FolderCreation="FALSE" VersioningEnabled="TRUE" Direction="$Resources:Direction;" Url="Lists/UsageGuidelinesConfig" BaseType="0" xmlns="http://schemas.microsoft.com/sharepoint/">
+  <MetaData>
+    <ContentTypes />
+    <Fields>
+      <Field Type="Boolean" Name="Enabled" DisplayName="Enabled" ID="{2a2c9dcf-7ca4-4658-bd81-7c4d7d8d43a9}"><Default>0</Default></Field>
+      <Field Type="Text" Name="Header" DisplayName="Header Text" ID="{6c578b82-f805-4de3-9d10-4d454ca6789f}" Required="TRUE" />
+      <Field Type="Note" Name="Message" DisplayName="Message" IsolateStyles="TRUE" NumLines="12" RichText="TRUE" RichTextMode="FullHtml" ID="{cf4f9c4e-4b20-42dd-895a-f51aa4cd4d0a}" Required="TRUE" />
+      <Field Type="Text" Name="MessageVersion" DisplayName="Message Version" ID="{c55025d4-d2f3-45af-afd0-7eaadfae1bfe}" Required="TRUE" />
+      <Field Type="Text" Name="DeclineRedirectUrl" DisplayName="Decline Redirect URL" ID="{9ef9d282-fba3-4c24-9597-645c35678a6b}" Required="TRUE" />
+    </Fields>
+    <Views>
+      <View BaseViewID="1" Type="HTML" WebPartZoneID="Main" DisplayName="$Resources:core,objectiv_schema_mwsidcamlidC24;" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" SetupPath="pages\viewpage.aspx" ImageUrl="/_layouts/images/generic.png" Url="AllItems.aspx">
+        <XslLink Default="TRUE">main.xsl</XslLink>
+        <JSLink>clienttemplates.js</JSLink>
+        <RowLimit Paged="TRUE">30</RowLimit>
+        <Toolbar Type="Standard" />
+        <ViewFields>
+          <FieldRef Name="Title" />
+          <FieldRef Name="Enabled" />
+          <FieldRef Name="Header" />
+          <FieldRef Name="Message" />
+          <FieldRef Name="MessageVersion" />
+          <FieldRef Name="DeclineRedirectUrl" />
+        </ViewFields>
+        <Query>
+          <OrderBy>
+            <FieldRef Name="MessageVersion" Ascending="FALSE" />
+          </OrderBy>
+        </Query>
+      </View>
+    </Views>
+    <Forms>
+      <Form Type="DisplayForm" Url="DispForm.aspx" SetupPath="pages\form.aspx" WebPartZoneID="Main" />
+      <Form Type="EditForm" Url="EditForm.aspx" SetupPath="pages\form.aspx" WebPartZoneID="Main" />
+      <Form Type="NewForm" Url="NewForm.aspx" SetupPath="pages\form.aspx" WebPartZoneID="Main" />
+    </Forms>
+  </MetaData>
+</List>

@@ -1,0 +1,34 @@
+<List xmlns:ows="Microsoft SharePoint" Title="UsageGuidelinesTracking" NoCrawl="TRUE" FolderCreation="FALSE" ReadSecurity="2" WriteSecurity="2" VersioningEnabled="TRUE" Direction="$Resources:Direction;" Url="Lists/UsageGuidelinesTracking" BaseType="0" xmlns="http://schemas.microsoft.com/sharepoint/">
+  <MetaData>
+    <ContentTypes />
+    <Fields>
+      <Field Type="Text" Name="AcceptedMessageVersion" DisplayName="Accepted Message Version" ID="{076e2311-7b47-4792-84a7-f14ec8367ae3}" Required="TRUE" />
+      <Field Type="DateTime" Name="AcceptedOn" DisplayName="Accepted On" FriendlyDisplayFormat="Disabled" Format="DateTime" CalType="0" ID="{6606550e-ee4b-48fe-aa01-3b50fb5a5335}" Required="FALSE"><Default>[today]</Default></Field>
+      <Field Type="User" Name="AcceptedBy" DisplayName="Accepted By" Format="Dropdown" List="UserInfo" UserSelectionMode="PeopleOnly" UserSelectionScope="0" ShowField="ImnName" ID="{1950299a-4be7-479a-b757-6c1e9b0c1f31}" Required="TRUE" />
+    </Fields>
+    <Views>
+      <View BaseViewID="1" Type="HTML" WebPartZoneID="Main" DisplayName="$Resources:core,objectiv_schema_mwsidcamlidC24;" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" SetupPath="pages\viewpage.aspx" ImageUrl="/_layouts/images/generic.png" Url="AllItems.aspx">
+        <XslLink Default="TRUE">main.xsl</XslLink>
+        <JSLink>clienttemplates.js</JSLink>
+        <RowLimit Paged="TRUE">30</RowLimit>
+        <Toolbar Type="Standard" />
+        <ViewFields>
+          <FieldRef Name="Title" />
+          <FieldRef Name="AcceptedMessageVersion" />
+          <FieldRef Name="AcceptedOn" />
+          <FieldRef Name="AcceptedBy" />
+        </ViewFields>
+        <Query>
+          <OrderBy>
+            <FieldRef Name="ID" />
+          </OrderBy>
+        </Query>
+      </View>
+    </Views>
+    <Forms>
+      <Form Type="DisplayForm" Url="DispForm.aspx" SetupPath="pages\form.aspx" WebPartZoneID="Main" />
+      <Form Type="EditForm" Url="EditForm.aspx" SetupPath="pages\form.aspx" WebPartZoneID="Main" />
+      <Form Type="NewForm" Url="NewForm.aspx" SetupPath="pages\form.aspx" WebPartZoneID="Main" />
+    </Forms>
+  </MetaData>
+</List>

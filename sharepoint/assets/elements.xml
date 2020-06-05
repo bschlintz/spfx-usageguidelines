@@ -4,6 +4,36 @@
         Title="UsageGuidelines"
         Location="ClientSideExtension.ApplicationCustomizer"
         ClientSideComponentId="021a3acb-1303-40e0-b8cd-a14a45d77385"
-        ClientSideComponentProperties="{&quot;declineRedirectUrl&quot;:&quot;&quot;}">
+        ClientSideComponentProperties="{}">
     </CustomAction>
+
+    <ListInstance
+        CustomSchema="list-config.xml"
+        FeatureId="00bfea71-de22-43b2-a848-c05709900100"
+        Title="UsageGuidelinesConfig"
+        TemplateType="100"
+        Url="Lists/UsageGuidelinesConfig">
+      <Data>
+        <Rows>
+          <Row>
+            <Field Name="ID">1</Field>
+            <Field Name="Title">Default</Field>
+            <Field Name="Enabled">0</Field>
+            <Field Name="Header">Site Usage Guidelines</Field>
+            <Field Name="Message"><![CDATA[<div class="ExternalClass89726E2ED0CD44B3A062A2C4E7595997"><div style="font-family&#58;Calibri, Arial, Helvetica, sans-serif;font-size&#58;11pt;color&#58;rgb(0, 0, 0);"><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br></span><div><br></div><div><b>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</b><br></div><div><br></div><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</span><br></div></div>]]></Field>
+            <Field Name="MessageVersion">v0.1</Field>
+            <Field Name="DeclineRedirectUrl">https://office.com</Field>
+          </Row>
+        </Rows>
+      </Data>
+    </ListInstance>
+
+    <ListInstance
+        CustomSchema="list-tracking.xml"
+        FeatureId="00bfea71-de22-43b2-a848-c05709900100"
+        Title="UsageGuidelinesTracking"
+        TemplateType="100"
+        Url="Lists/UsageGuidelinesTracking"
+    />
+
 </Elements>
