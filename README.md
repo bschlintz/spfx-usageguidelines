@@ -8,6 +8,7 @@ Require site users to accept usage guidelines in order to use a SharePoint site 
 
 ### Solution Installation
 1. Download the SPFx package [site-usage-guidelines.sppkg](https://github.com/bschlintz/spfx-usageguidelines/blob/master/sharepoint/solution/site-usage-guidelines.sppkg) file from Github (or clone the repo and build the package yourself)
+    > __Tip__: Click on the link, then click Download. On Windows, you may need to unblock the file after downloading otherwise the package will be corrupt when uploading to SharePoint. To verify, right-click on the .sppkg file, then click Properties, then look for an 'Unblock' checkbox at the bottom. Tick the box and click OK. If you don't see the checkbox, then no action is required.
 2. Upload sppkg file to the 'Apps for SharePoint' library in your Tenant App Catalog
 3. Click Deploy
 
