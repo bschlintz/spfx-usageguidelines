@@ -21,6 +21,7 @@
           <FieldRef Name="Message" />
           <FieldRef Name="MessageVersion" />
           <FieldRef Name="DeclineRedirectUrl" />
+          <FieldRef Name="Modified" />
         </ViewFields>
         <Query>
           <OrderBy>

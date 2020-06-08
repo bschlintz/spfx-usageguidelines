@@ -33,12 +33,17 @@ export default class UsageGuidelinesApplicationCustomizer
   }
 
   private async onNavigated(): Promise<void> {
-    const config = await this._service.getUserAcceptance();
-    Log.verbose(LOG_SOURCE, JSON.stringify(config));
+    const hasAccepted = await this._service.getAcknowledgement();
 
-    if (config && !config.userHasAcceptedCurrentVersion) {
-      Log.info(LOG_SOURCE, `Displaying Usage Guidelines`);
-      this.renderUsageGuidelines(config);
+    if (!hasAccepted) {
+      const config = await this._service.getConfig();
+      Log.verbose(LOG_SOURCE, JSON.stringify(config));
+
+      if (config) {
+        Log.info(LOG_SOURCE, `Displaying Usage Guidelines`);
+        this.renderUsageGuidelines(config);
+      }
+
     }
   }
 

@@ -1,6 +1,7 @@
 declare interface IUsageGuidelinesApplicationCustomizerStrings {
   AcceptLabel: string;
   DeclineLabel: string;
+  LastUpdatedLabel: string;
 }
 
 declare module 'UsageGuidelinesApplicationCustomizerStrings' {

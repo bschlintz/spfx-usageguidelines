@@ -2,9 +2,15 @@
   <MetaData>
     <ContentTypes />
     <Fields>
-      <Field Type="Text" Name="AcceptedMessageVersion" DisplayName="Accepted Message Version" ID="{076e2311-7b47-4792-84a7-f14ec8367ae3}" Required="TRUE" />
-      <Field Type="DateTime" Name="AcceptedOn" DisplayName="Accepted On" FriendlyDisplayFormat="Disabled" Format="DateTime" CalType="0" ID="{6606550e-ee4b-48fe-aa01-3b50fb5a5335}" Required="FALSE"><Default>[today]</Default></Field>
-      <Field Type="User" Name="AcceptedBy" DisplayName="Accepted By" Format="Dropdown" List="UserInfo" UserSelectionMode="PeopleOnly" UserSelectionScope="0" ShowField="ImnName" ID="{1950299a-4be7-479a-b757-6c1e9b0c1f31}" Required="TRUE" />
+      <Field Type="Choice" Name="Action" DisplayName="Action" FillInChoice="FALSE" Format="RadioButtons" ID="{2b0e7af7-ef9d-4988-beaf-9875db4f6e41}" Required="TRUE">
+        <CHOICES>
+          <CHOICE>Accepted</CHOICE>
+          <CHOICE>Declined</CHOICE>
+        </CHOICES>
+      </Field>
+      <Field Type="Text" Name="AcknowledgedVersion" DisplayName="Acknowledged Version" Indexed="TRUE" ID="{be443608-4673-4c37-ae00-e12b54f6e0a2}" Required="TRUE" />
+      <Field Type="User" Name="AcknowledgedBy" DisplayName="Acknowledged By" Format="Dropdown" List="UserInfo" UserSelectionMode="PeopleOnly" UserSelectionScope="0" ShowField="ImnName" Indexed="TRUE" ID="{483ff399-297b-482f-a6c9-aa5f79e880a4}" Required="TRUE" />
+      <Field Type="DateTime" Name="AcknowledgedOn" DisplayName="Acknowledged On" FriendlyDisplayFormat="Disabled" Format="DateTime" CalType="0" Indexed="TRUE" ID="{98e8d5be-d451-424f-b136-ba070f6d5e34}" Required="FALSE"><Default>[today]</Default></Field>
     </Fields>
     <Views>
       <View BaseViewID="1" Type="HTML" WebPartZoneID="Main" DisplayName="$Resources:core,objectiv_schema_mwsidcamlidC24;" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" SetupPath="pages\viewpage.aspx" ImageUrl="/_layouts/images/generic.png" Url="AllItems.aspx">
@@ -14,13 +20,14 @@
         <Toolbar Type="Standard" />
         <ViewFields>
           <FieldRef Name="Title" />
-          <FieldRef Name="AcceptedMessageVersion" />
-          <FieldRef Name="AcceptedOn" />
-          <FieldRef Name="AcceptedBy" />
+          <FieldRef Name="Action" />
+          <FieldRef Name="AcknowledgedVersion" />
+          <FieldRef Name="AcknowledgedBy" />
+          <FieldRef Name="AcknowledgedOn" />
         </ViewFields>
         <Query>
           <OrderBy>
-            <FieldRef Name="ID" />
+            <FieldRef Name="AcknowledgedOn" Ascending="FALSE" />
           </OrderBy>
         </Query>
       </View>

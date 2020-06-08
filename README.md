@@ -1,26 +1,28 @@
-## site-usage-guidelines
+## Usage Guidelines Pop-up
 
-This is where you include your WebPart documentation.
+Require site users to accept usage guidelines in order to use a SharePoint site collection. The usage guideline configuration and responses are maintained within SharePoint lists.
 
-### Building the code
+## Setup Instructions
+### Pre-requisites
+- App Catalog: Ensure the [App Catalog](https://docs.microsoft.com/en-us/sharepoint/use-app-catalog) is setup in your SharePoint Online tenant
 
-```bash
-git clone the repo
-npm i
-npm i -g gulp
-gulp
-```
+### Solution Installation
+1. Download the SPFx package [site-usage-guidelines.sppkg](https://github.com/bschlintz/spfx-usageguidelines/blob/master/sharepoint/solution/site-usage-guidelines.sppkg) file from Github (or clone the repo and build the package yourself)
+2. Upload sppkg file to the 'Apps for SharePoint' library in your Tenant App Catalog
+3. Click Deploy
 
-This package produces the following:
+### Solution Updates
+Follow the same steps as installation. Overwrite the existing package in the 'Apps for SharePoint' library when uploading the new package. 
 
-* lib/* - intermediate-stage commonjs build artifacts
-* dist/* - the bundled script, along with other resources
-* deploy/* - all resources which should be uploaded to a CDN.
+> __Tip__: Be sure to check-in the sppkg file after the deployment if it is left checked-out.
 
-### Build options
+### Site Installation
+1. Navigate to the SharePoint site collection where you want to enable this functionality.
+2. From the page command bar 'New' drop-down or settings gear, click 'Add an App'.
+3. Click 'Site Usage Guidelines' from the 'Apps you can add' section to install the app within your site. This step creates two lists: `UsageGuidelinesConfig` and `UsageGuidelinesTracking`.
+4. Navigate to the `UsageGuidelinesTracking` list settings. Break the list permissions to stop inheriting the from site. Configure the list permissions to allow the site visitors group the ability to add items to the list.
+    > __Security Tip__: Create a new site permission level called 'Add Items Only'. Assign this permission level to the site visitors group on the `UsageGuidelinesTracking` list.
+5. Navigate to the `UsageGuidelinesConfig` list. Update the default list item to configure the usage guidelines message, version, header text. Once finished, set the item's `Enabled` field to true. This will begin prompting site users to acknowledge the usage guidelines.
 
-gulp clean - TODO
-gulp test - TODO
-gulp serve - TODO
-gulp bundle - TODO
-gulp package-solution - TODO
+## Technical Details
+The solution will cache 'Accepted' responses in the user's browser using [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) for 30 days. If the usage guidelines change during this time, the user will not be prompted to acknowledge the guidelines again until 30 days pass and 1) the message version changes 2) or the user's tracking list item is deleted. See [UsageGuidelinesService.ts](https://github.com/bschlintz/spfx-usageguidelines/blob/master/src/services/UsageGuidelinesService.ts).
