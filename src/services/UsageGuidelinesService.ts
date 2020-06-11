@@ -9,10 +9,14 @@ import "@pnp/common";
 import { LOG_SOURCE } from '../extensions/usageGuidelines/UsageGuidelinesApplicationCustomizer';
 import endOfMonth from 'date-fns/endOfMonth';
 import addMinutes from 'date-fns/addMinutes';
+import addMonths from 'date-fns/addMonths';
+import setDate from 'date-fns/setDate';
+import format from 'date-fns/format';
 
 const NOW = new Date();
-const BROWSER_CACHE_EXPIRATION_CONFIG = addMinutes(NOW, 1); // 1 minute
+const BROWSER_CACHE_EXPIRATION_CONFIG = addMinutes(NOW, 1); // 1 minute from now
 const BROWSER_CACHE_EXPIRATION_TRACKING = endOfMonth(NOW); // End of the current month
+const REPROMPT_IF_ACKNOWLEDGED_BEFORE = setDate(addMonths(NOW, -11), 1); // One year ago from the first of next month
 
 const LIST_NAME_TRACKING = "UsageGuidelinesTracking";
 const LIST_NAME_CONFIG = "UsageGuidelinesConfig";
@@ -89,12 +93,15 @@ export class UsageGuidelinesService {
 
   private _fetchLatestAcknowledgement = async (version?: string): Promise<boolean | null> => {
     // Fetch user acknowledgement
-    let filters = [`AcknowledgedBy/Id eq ${this._context.pageContext.legacyPageContext.userId}`];
+    let filters = [
+      `AcknowledgedBy/Id eq ${this._context.pageContext.legacyPageContext.userId}`,
+      `AcknowledgedOn ge '${format(REPROMPT_IF_ACKNOWLEDGED_BEFORE, 'yyyy-MM-dd')}'`
+    ];
     if (version) {
       filters.push(`AcknowledgedVersion eq '${version}'`);
     }
     const result = await sp.web.lists.getByTitle(LIST_NAME_TRACKING).items.filter(filters.join(' and '))
-      .expand('AcknowledgedBy').select('AcknowledgedBy/Id', 'AcknowledgedVersion', 'Action')
+      .expand('AcknowledgedBy').select('AcknowledgedBy/Id', 'AcknowledgedVersion', 'AcknowledgedOn', 'Action')
       .orderBy('AcknowledgedOn', false)
       .top(1).get();
 
