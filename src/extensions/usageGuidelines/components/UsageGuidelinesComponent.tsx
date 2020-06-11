@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { Dialog, DialogType, DialogFooter } from 'office-ui-fabric-react/lib/Dialog';
+import { Dialog, DialogType, DialogFooter, ResponsiveMode } from 'office-ui-fabric-react/lib/Dialog';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
@@ -37,7 +37,9 @@ export const UsageGuidelinesComponent: React.FC<UsageGuidelinesProps> = ({ servi
   return <>
     <Dialog
       hidden={!isVisible}
-      minWidth={600}
+      minWidth={300}
+      maxWidth={700}
+      styles={{ main: { margin: 20 }}}
       dialogContentProps={{
         type: DialogType.normal,
         title: config.header,
@@ -47,11 +49,12 @@ export const UsageGuidelinesComponent: React.FC<UsageGuidelinesProps> = ({ servi
         isDarkOverlay: true,
       }}
     >
-      <Stack>
-        <Stack tokens={{childrenGap: 10}}>
-          <div dangerouslySetInnerHTML={{__html: config.message }} />
-          <div>{`${strings.LastUpdatedLabel}: ${config.lastUpdated}`}</div>
-        </Stack>
+      <Stack
+        tokens={{childrenGap: 10}}
+        styles={{ root: { maxHeight: 500, overflow: 'auto', paddingRight: 5 }}}
+      >
+        <div dangerouslySetInnerHTML={{__html: config.message }} />
+        <div>{`${strings.LastUpdatedLabel}: ${config.lastUpdated}`}</div>
       </Stack>
       <DialogFooter>
         <PrimaryButton

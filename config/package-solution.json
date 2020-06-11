@@ -3,7 +3,7 @@
   "solution": {
     "name": "Site Usage Guidelines",
     "id": "e16a73c1-4ce7-4c21-bbb9-6a911420fd73",
-    "version": "1.0.0.0",
+    "version": "1.1.0.0",
     "includeClientSideAssets": true,
     "isDomainIsolated": false,
     "features": [
