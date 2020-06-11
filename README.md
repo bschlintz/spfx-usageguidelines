@@ -1,6 +1,8 @@
-## Usage Guidelines Pop-up
+## Site Usage Guidelines
 
 Require site users to accept usage guidelines in order to use a SharePoint site collection. The usage guideline configuration and responses are maintained within SharePoint lists.
+
+![Site Usage Guidelines Pop-up](./images/SiteUsageGuidelinesPopup.png)
 
 ## Setup Instructions
 ### Pre-requisites
