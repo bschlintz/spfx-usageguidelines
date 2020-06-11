@@ -7,9 +7,12 @@ import "@pnp/sp/lists";
 import "@pnp/sp/items";
 import "@pnp/common";
 import { LOG_SOURCE } from '../extensions/usageGuidelines/UsageGuidelinesApplicationCustomizer';
+import endOfMonth from 'date-fns/endOfMonth';
+import addMinutes from 'date-fns/addMinutes';
 
-const BROWSER_CACHE_EXPIRATION_CONFIG = 1000 * 60 * 10; // 10 minutes
-const BROWSER_CACHE_EXPIRATION_TRACKING = 1000 * 60 * 60 * 24 * 30; // 30 days
+const NOW = new Date();
+const BROWSER_CACHE_EXPIRATION_CONFIG = addMinutes(NOW, 1); // 1 minute
+const BROWSER_CACHE_EXPIRATION_TRACKING = endOfMonth(NOW); // End of the current month
 
 const LIST_NAME_TRACKING = "UsageGuidelinesTracking";
 const LIST_NAME_CONFIG = "UsageGuidelinesConfig";
@@ -46,20 +49,19 @@ export class UsageGuidelinesService {
   private _makeCacheKey = (listName: string) => `${listName}_${this._context.pageContext.site.id.toString()}`;
 
   private _clearCache = (): void => {
+    this._storage.local.delete(this._makeCacheKey(LIST_NAME_CONFIG));
     this._storage.local.delete(this._makeCacheKey(LIST_NAME_TRACKING));
   }
 
   private _cacheConfig = (config: UsageGuidelinesConfig): void => {
     const cacheKey: string = this._makeCacheKey(LIST_NAME_CONFIG);
-    const cacheExpiration: Date = new Date(Date.now() + BROWSER_CACHE_EXPIRATION_CONFIG);
-    this._storage.local.put(cacheKey, config, cacheExpiration);
+    this._storage.local.put(cacheKey, config, BROWSER_CACHE_EXPIRATION_CONFIG);
   }
 
   private _cacheAcknowledgement = (action: AcknowledgeAction, version: string): void => {
     const cacheKey: string = this._makeCacheKey(LIST_NAME_TRACKING);
     const cacheValue: AcknowledgementCache = { action, version };
-    const cacheExpiration: Date = new Date(Date.now() + BROWSER_CACHE_EXPIRATION_TRACKING);
-    this._storage.local.put(cacheKey, cacheValue, cacheExpiration);
+    this._storage.local.put(cacheKey, cacheValue, BROWSER_CACHE_EXPIRATION_TRACKING);
   }
 
   private _fetchConfig = async (): Promise<UsageGuidelinesConfig> => {
