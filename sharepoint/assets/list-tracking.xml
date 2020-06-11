@@ -1,4 +1,4 @@
-<List xmlns:ows="Microsoft SharePoint" Title="UsageGuidelinesTracking" NoCrawl="TRUE" FolderCreation="FALSE" ReadSecurity="2" WriteSecurity="2" VersioningEnabled="TRUE" Direction="$Resources:Direction;" Url="Lists/UsageGuidelinesTracking" BaseType="0" xmlns="http://schemas.microsoft.com/sharepoint/">
+<List xmlns:ows="Microsoft SharePoint" Title="UsageGuidelinesTracking" ReadSecurity="2" WriteSecurity="2" NoCrawl="TRUE" EnableAttachments="FALSE" FolderCreation="FALSE" VersioningEnabled="TRUE" Direction="$Resources:Direction;" Url="Lists/UsageGuidelinesTracking" BaseType="0" xmlns="http://schemas.microsoft.com/sharepoint/">
   <MetaData>
     <ContentTypes />
     <Fields>
@@ -8,7 +8,7 @@
           <CHOICE>Declined</CHOICE>
         </CHOICES>
       </Field>
-      <Field Type="Text" Name="AcknowledgedVersion" DisplayName="Acknowledged Version" Indexed="TRUE" ID="{be443608-4673-4c37-ae00-e12b54f6e0a2}" Required="TRUE" />
+      <Field Type="Number" Name="AcknowledgedVersion" DisplayName="Acknowledged Version" Indexed="TRUE" ID="{efbc056c-01a1-456f-984d-d35e888e18d2}" Required="TRUE" />
       <Field Type="User" Name="AcknowledgedBy" DisplayName="Acknowledged By" Format="Dropdown" List="UserInfo" UserSelectionMode="PeopleOnly" UserSelectionScope="0" ShowField="ImnName" Indexed="TRUE" ID="{483ff399-297b-482f-a6c9-aa5f79e880a4}" Required="TRUE" />
       <Field Type="DateTime" Name="AcknowledgedOn" DisplayName="Acknowledged On" FriendlyDisplayFormat="Disabled" Format="DateTime" CalType="0" Indexed="TRUE" ID="{98e8d5be-d451-424f-b136-ba070f6d5e34}" Required="FALSE"><Default>[today]</Default></Field>
     </Fields>
